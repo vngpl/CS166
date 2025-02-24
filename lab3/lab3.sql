@@ -1,0 +1,152 @@
+DROP TABLE IF EXISTS work_proj;
+DROP TABLE IF EXISTS work_dept;
+DROP TABLE IF EXISTS work_in;
+DROP TABLE IF EXISTS Graduate;
+DROP TABLE IF EXISTS Project;
+DROP TABLE IF EXISTS Dept;
+DROP TABLE IF EXISTS Professor;
+DROP TABLE IF EXISTS Lives;
+DROP TABLE IF EXISTS Perform;
+DROP TABLE IF EXISTS Plays;
+DROP TABLE IF EXISTS Telephone;
+DROP TABLE IF EXISTS Place;
+DROP TABLE IF EXISTS Songs;
+DROP TABLE IF EXISTS Album;
+DROP TABLE IF EXISTS Instrument;
+DROP TABLE IF EXISTS Musicians;
+
+CREATE TABLE Professor (
+  ssn CHAR(11) NOT NULL,
+  name CHAR(30) NOT NULL,
+  age INTEGER,
+  rank CHAR(30) NOT NULL,
+  specialty CHAR(30) NOT NULL,
+  PRIMARY KEY(ssn)
+);
+
+CREATE TABLE Dept (
+  dno INTEGER NOT NULL,
+  dname CHAR(30) NOT NULL,
+  office INTEGER,
+  ssn CHAR(11) NOT NULL,
+  PRIMARY KEY(dno),
+  FOREIGN KEY(ssn) REFERENCES Professor(ssn) ON DELETE NO ACTION
+);
+
+CREATE TABLE Project (
+  pno INTEGER NOT NULL,
+  sponsor CHAR(30) NOT NULL,
+  start_date DATE,
+  end_date DATE,
+  budget INTEGER,
+  ssn CHAR(11) NOT NULL,
+  PRIMARY KEY(pno),
+  FOREIGN KEY(ssn) REFERENCES Professor(ssn) ON DELETE NO ACTION
+);
+
+CREATE TABLE Graduate (
+  SSN CHAR(11) NOT NULL,
+  name CHAR(30) NOT NULL,
+  age INTEGER,
+  deg_pg REAL,
+  dno INTEGER NOT NULL,
+  advisor_SSN CHAR(11) NOT NULL,
+  prof_ssn CHAR(11) NOT NULL,
+  PRIMARY KEY(SSN),
+  FOREIGN KEY(dno) REFERENCES Dept(dno) ON DELETE CASCADE,
+  FOREIGN KEY(advisor_SSN) REFERENCES Graduate(SSN) ON DELETE CASCADE,
+  FOREIGN KEY(prof_ssn) REFERENCES Professor(ssn) ON DELETE CASCADE
+);
+
+CREATE TABLE work_in (
+  ssn CHAR(11) NOT NULL,
+  pno INTEGER NOT NULL,
+  PRIMARY KEY(ssn, pno),
+  FOREIGN KEY(ssn) REFERENCES Professor(ssn) ON DELETE CASCADE,
+  FOREIGN KEY(pno) REFERENCES Project(pno) ON DELETE CASCADE
+);
+
+CREATE TABLE work_dept (
+  time_pc REAL,
+  ssn CHAR(11) NOT NULL,
+  dno INTEGER NOT NULL,
+  PRIMARY KEY(ssn, dno),
+  FOREIGN KEY(ssn) REFERENCES Professor(ssn) ON DELETE CASCADE,
+  FOREIGN KEY(dno) REFERENCES Dept(dno) ON DELETE CASCADE
+);
+
+CREATE TABLE work_proj (
+  since DATE,
+  pno INTEGER NOT NULL,
+  SSN CHAR(11) NOT NULL,
+  PRIMARY KEY(pno, SSN),
+  FOREIGN KEY(pno) REFERENCES Project(pno) ON DELETE CASCADE,
+  FOREIGN KEY(SSN) REFERENCES Graduate(SSN) ON DELETE CASCADE
+);
+
+CREATE TABLE Musicians (
+  ssn CHAR(11) NOT NULL,
+  name CHAR(30) NOT NULL,
+  PRIMARY KEY(ssn)
+);
+
+CREATE TABLE Instrument (
+  instrId INTEGER NOT NULL,
+  dname CHAR(30) NOT NULL,
+  key CHAR(5) NOT NULL,
+  PRIMARY KEY(instrId)
+);
+
+CREATE TABLE Album (
+  albumIdentifer INTEGER NOT NULL,
+  copyrightDate DATE,
+  speed INTEGER,
+  title CHAR(30) NOT NULL,
+  ssn CHAR(11) NOT NULL,
+  PRIMARY KEY(albumIdentifer),
+  FOREIGN KEY(ssn) REFERENCES Musicians(ssn) ON DELETE CASCADE
+);
+
+CREATE TABLE Songs (
+  songId INTEGER NOT NULL,
+  title CHAR(30) NOT NULL,
+  author CHAR(30) NOT NULL,
+  albumIdentifer INTEGER NOT NULL,
+  PRIMARY KEY(songId),
+  FOREIGN KEY(albumIdentifer) REFERENCES Album(albumIdentifer) ON DELETE CASCADE
+);
+
+CREATE TABLE Place (
+  address CHAR(30) NOT NULL,
+  PRIMARY KEY(address)
+);
+
+CREATE TABLE Telephone (
+  phone_no CHAR(13) NOT NULL,
+  address CHAR(30) NOT NULL,
+  FOREIGN KEY(address) REFERENCES Place(address) ON DELETE CASCADE
+);
+
+CREATE TABLE Plays (
+  ssn CHAR(11) NOT NULL,
+  instrID INTEGER NOT NULL,
+  PRIMARY KEY(ssn, instrID),
+  FOREIGN KEY(ssn) REFERENCES Musicians(ssn) ON DELETE CASCADE,
+  FOREIGN KEY(instrID) REFERENCES Instrument(instrId) ON DELETE CASCADE
+);
+
+CREATE TABLE Perform (
+  ssn CHAR(11) NOT NULL,
+  songId INTEGER NOT NULL,
+  PRIMARY KEY(ssn, songId),
+  FOREIGN KEY(ssn) REFERENCES Musicians(ssn) ON DELETE CASCADE,
+  FOREIGN KEY(songId) REFERENCES Songs(songId) ON DELETE CASCADE
+);
+
+CREATE TABLE Lives (
+  ssn CHAR(11) NOT NULL,
+  address CHAR(30) NOT NULL,
+  PRIMARY KEY(ssn, address),
+  FOREIGN KEY(ssn) REFERENCES Musicians(ssn) ON DELETE CASCADE,
+  FOREIGN KEY(address) REFERENCES Place(address) ON DELETE CASCADE
+);
