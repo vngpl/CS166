@@ -53,4 +53,3 @@ CREATE TABLE GENRE (
 \COPY CASTS FROM 'casts-ascii.txt' WITH DELIMITER '|' NULL AS '';
 \COPY MOVIE_DIRECTORS FROM 'movie_directors-ascii.txt' WITH DELIMITER '|' NULL AS '';
 \COPY GENRE FROM 'genre-ascii.txt' WITH DELIMITER '|' NULL AS '';
-

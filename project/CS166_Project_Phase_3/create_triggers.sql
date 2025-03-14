@@ -1,0 +1,19 @@
+DROP SEQUENCE IF EXISTS orderID_seq;
+DROP TRIGGER IF EXISTS orderID_trigger ON FoodOrder;
+
+CREATE SEQUENCE orderID_seq START WITH 10000;
+
+CREATE OR REPLACE FUNCTION increment_orderID()
+RETURNS TRIGGER AS
+$BODY$
+BEGIN
+    NEW.orderID := nextval('orderID_seq');
+    RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER orderID_trigger
+BEFORE INSERT ON FoodOrder
+FOR EACH ROW
+EXECUTE PROCEDURE increment_orderID();
