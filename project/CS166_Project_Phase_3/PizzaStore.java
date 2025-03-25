@@ -961,7 +961,7 @@
 
          String role = result.get(0).get(0);
 
-         if (!role.trim().equals("manager") || !role.trim().equals("driver")) {
+         if (!role.trim().equals("manager") && !role.trim().equals("driver")) {
             System.out.println("Insufficient privileges. Please ask a manager or driver for assistance.");
             return;
          }
